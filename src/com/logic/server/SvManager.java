@@ -1,14 +1,23 @@
 package com.logic.server;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+
 import com.common.connect.GameServer;
+import com.logic.container.SvContainer;
+import com.sv.ServerModule;
 
 public class SvManager{
 	
 	private static SvManager s_instance     = null;
 	private Map<Integer,GameServer> m_serverMap = new ConcurrentHashMap<Integer,GameServer>();
-	private Map<Integer,GameServer> m_svModuleMap = new ConcurrentHashMap<Integer,GameServer>();
+	private Map<Integer,SvContainer> m_svModuleMap = new HashMap<Integer,SvContainer>();
+	
+	private SvManager()
+	{
+		this.init();
+	}
 	
 	public static SvManager getInstance()
 	{
@@ -20,10 +29,18 @@ public class SvManager{
 		return s_instance;
 	}
 	
+	
+	private void init()
+	{
+		m_svModuleMap.put(ServerModule.Login, new SvContainer(ServerModule.Login));
+		m_svModuleMap.put(ServerModule.Logic, new SvContainer(ServerModule.Logic));
+	}
+	
 	public void regServer(GameServer server)
 	{
 		this.m_serverMap.put(server.getId(), server);
-		this.m_svModuleMap.put(server.getModule(), server);
+		SvContainer container = this.m_svModuleMap.get(server.getModule());
+		container.addSv(server);
 	}
 	
 	public GameServer getServerById(int id)
@@ -34,11 +51,13 @@ public class SvManager{
 	public void unRegServer(GameServer server)
 	{
 		this.m_serverMap.remove(server.getId());
-		this.m_svModuleMap.remove(server.getModule());
+		SvContainer container = this.m_svModuleMap.get(server.getModule());
+		container.rmSv(server);
 	}
 	
 	public GameServer getServerByModule(int module)
 	{
-		return this.m_serverMap.get(module);
+		SvContainer container = this.m_svModuleMap.get(module);
+		return container.getAvailableServer();
 	}
 }

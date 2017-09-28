@@ -7,11 +7,11 @@ import com.logic.server.SvManager;
 
 public class SvConnectReportJob implements Runnable{
 
-	private SvManager m_sv = null;
+	private SvManager m_manager = null;
 	
-	public SvConnectReportJob(SvManager server)
+	public SvConnectReportJob(SvManager manager)
 	{
-		m_sv = server;
+		m_manager = manager;
 	}
 	
 	@Override
