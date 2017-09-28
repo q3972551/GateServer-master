@@ -84,4 +84,9 @@ public class IOSession {
 	{
 		return this.m_sessionid;
 	}
+	
+	public boolean isConnect()
+	{
+		return this.m_client.isRemoved();
+	}
 }
