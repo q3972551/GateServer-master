@@ -1,10 +1,13 @@
 package com.common.connect;
 
 
+import net.sf.json.JSONObject;
+
 import com.common.session.IOSession;
 import com.logic.server.SvManager;
 import com.message.MsgBuffer.Msg;
 import com.message.MsgBuffer.MsgHead;
+
 import io.netty.channel.ChannelFuture;
 
 public class GameServer{
@@ -60,5 +63,19 @@ public class GameServer{
 		}
 		
 		return m_session.sendMsg(msg);
+	}
+	
+	public boolean isConnect()
+	{
+		return this.m_session.isConnect();
+	}
+	
+	public String toReport()
+	{
+		JSONObject ob = new JSONObject();
+		ob.put("ip", this.m_session.getAddress());
+		ob.put("status", this.m_session.isConnect());
+		ob.put("id", this.m_id);
+		return ob.toString();
 	}
 }
